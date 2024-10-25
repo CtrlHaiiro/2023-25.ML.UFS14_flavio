@@ -1,30 +1,26 @@
 import os
+import csv
 
-print("#################################")
-
-def list_files_and_directories(startpath):
-    for root, dirs, files in os.walk(startpath):
-        level = root.replace(startpath, '').count(os.sep)
-        indent = ' ' * 4 * level
-        print(f'{indent}{os.path.basename(root)}/')
-        subindent = ' ' * 4 * (level + 1)
-        for f in files:
-            print(f'{subindent}{f}')
-
-model_dir = os.environ['SM_MODEL_DIR']
-
-with open(model_dir + '/output_model.txt', 'w') as f:
-    f.write('Ciao sono il modello di ML')
-    
-output_dir = os.environ['SM_OUTPUT_DIR']
-with open(output_dir + '/output.txt', 'w') as f:
-    f.write('Ciao sono il log del training')
-    
 input_dir = os.environ['SM_INPUT_DIR']
-list_files_and_directories(input_dir)
+input_text = ''
 
+print('###### opening train')
 with open(input_dir + "/data/training/train.csv", 'r') as fp:
-    lines = len(fp.readlines())
-    print('########Total Number of lines:', lines)
-    with open(output_dir+'/output_lines.txt',"w") as f:
-        f.write(f"Ciao, le righe sono: {lines}")
+    # lines = len(fp.readlines())
+    # print('Total Number of lines:', lines)
+    input_text = str(len(fp.readlines()))
+
+print('###### closed train')
+
+
+print('###### opening model')
+model_dir = os.environ['SM_MODEL_DIR']
+with open(model_dir + '/model.txt', 'w') as f:
+    f.write('model cio')
+print('###### closing model')
+    
+output_dir = os.environ['SM_MODEL_DIR']
+with open(output_dir + '/output.txt', 'w') as f:
+    f.write('Ciao output')
+with open(output_dir + '/output_csv.txt', 'w') as f:
+    f.write(input_text)
