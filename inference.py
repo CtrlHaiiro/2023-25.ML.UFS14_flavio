@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 
 def doit(Square_Footage,Num_Bedrooms,Num_Bathrooms,Year_Built,Lot_Size,Garage_Size,Neighborhood_Quality):
-    model_dir = environ['SM_MODEL_DIR']
+    model_dir = "/opt/ml/model"
     print("######## La model dir è: {model_dir}")
     model = joblib.load(f"{model_dir}/output.joblib")
     predict_input = np.array([
@@ -28,16 +28,19 @@ def doit(Square_Footage,Num_Bedrooms,Num_Bathrooms,Year_Built,Lot_Size,Garage_Si
         "predict_result": predict_result.tolist()
     })
 
-@app.route('/ping')
-def ping():
+@app.route('/invocations', methods=['POST'])
+def invocations():
     logging.debug('Hello from route /ping')
-    SqF = request.args.get('Square_Footage')
+    request_input_data = request.get_json()
+    SqF = request_input_data['Square_Footage']
     NBe = request.args.get('Num_Bedrooms')
     NBa = request.args.get('Num_Bathroom')
     YeB = request.args.get('Year_Built')
     LoTS = request.args.get('Lot_Size')
     GS = request.args.get('Garage_Size')
     NeQ = request.args.get('Neighborhood_Quality')
-    
-
     return doit(float(SqF), float(NBe), float(NBa), float(YeB), float(LoTS), float(GS), float(NeQ))
+    
+@app.route('/ping')
+def ping():
+    return 'Hello, World!'

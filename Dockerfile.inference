@@ -6,4 +6,4 @@ run pip3 install -r /opt/requirements.txt
 ADD ./inference.py /opt/inference.py
 
 ENV FLASK_APP=/opt/inference.py
-CMD ["flask", "run", "--host", "0.0.0.0", "--port", "8080"]
+ENTRYPOINT ["/opt/pippo.sh"]
